@@ -90,7 +90,7 @@ class Maze:
                 d_col, d_row = direction.delta
                 nxt_col = i + d_col
                 nxt_row = j + d_row
-                if self._out_of_range(nxt_col, nxt_row):
+                if self._is_out_of_range(nxt_col, nxt_row):
                     continue
                 if not self._cells[nxt_col][nxt_row].visited:
                     possible.append(direction)
@@ -121,10 +121,49 @@ class Maze:
                 self._cells[nc][nr].has_top_wall = False
         return (nc, nr)
 
-    def _out_of_range(self, col, row):
+    def _is_out_of_range(self, col, row):
         return row < 0 or row >= self._num_rows or col < 0 or col >= self._num_cols
+
+    def _is_exit(self, col, row):
+        return col == self._num_cols - 1 and row == self._num_rows - 1
+
+    def _is_blocked_by_wall(self, col: int, row: int, direction: Direction):
+        match (direction):
+            case direction.RIGHT:
+                return self._cells[col][row].has_right_wall
+            case direction.LEFT:
+                return self._cells[col][row].has_left_wall
+            case direction.UP:
+                return self._cells[col][row].has_top_wall
+            case direction.DOWN:
+                return self._cells[col][row].has_bottom_wall
 
     def _reset_cells_visited(self):
         for c in range(self._num_cols):
             for r in range(self._num_rows):
                 self._cells[c][r].visited = False
+
+    def solve(self):
+        return self._solve_r(0, 0)
+
+    def _solve_r(self, col: int, row: int):
+        self._animate()
+        self._cells[col][row].visited = True
+        if self._is_exit(col, row):
+            return True
+        for direction in Direction:
+            d_col, d_row = direction.delta
+            nxt_col, nxt_row = col + d_col, row + d_row
+            if (
+                self._is_out_of_range(nxt_col, nxt_row)
+                or self._cells[nxt_col][nxt_row].visited
+                or self._is_blocked_by_wall(col, row, direction)
+            ):
+                continue
+            self._cells[col][row].draw_move(self._cells[nxt_col][nxt_row])
+            res = self._solve_r(nxt_col, nxt_row)
+            if res:
+                return True
+            else:
+                self._cells[col][row].draw_move(self._cells[nxt_col][nxt_row], True)
+        return False

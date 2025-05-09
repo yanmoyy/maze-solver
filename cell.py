@@ -25,18 +25,22 @@ class Cell:
         right = Line(Point(x2, y1), Point(x2, y2))
         top = Line(Point(x1, y1), Point(x2, y1))
         bottom = Line(Point(x1, y2), Point(x2, y2))
+
         if self.has_left_wall:
-            self._win.draw_line(right)
-        else:
-            self._win.draw_line(right, "white")
-        if self.has_right_wall:
             self._win.draw_line(left)
         else:
             self._win.draw_line(left, "white")
+
+        if self.has_right_wall:
+            self._win.draw_line(right)
+        else:
+            self._win.draw_line(right, "white")
+
         if self.has_top_wall:
             self._win.draw_line(top)
         else:
             self._win.draw_line(top, "white")
+
         if self.has_bottom_wall:
             self._win.draw_line(bottom)
         else:
