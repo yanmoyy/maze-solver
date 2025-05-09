@@ -49,6 +49,7 @@ class Maze:
         self._create_cells()
         self._break_entrance_and_exit()
         self._break_walls_r(0, 0)
+        self._reset_cells_visited()
 
     def _create_cells(self) -> None:
         for i in range(self._num_cols):
@@ -103,7 +104,6 @@ class Maze:
             self._break_walls_r(nc, nr)
 
     def _knock_out_wall(self, i: int, j: int, direction: Direction) -> Tuple[int, int]:
-        print(i, j, direction)
         dc, dr = direction.delta
         nc, nr = i + dc, j + dr
         match (direction):
@@ -123,3 +123,8 @@ class Maze:
 
     def _out_of_range(self, col, row):
         return row < 0 or row >= self._num_rows or col < 0 or col >= self._num_cols
+
+    def _reset_cells_visited(self):
+        for c in range(self._num_cols):
+            for r in range(self._num_rows):
+                self._cells[c][r].visited = False
