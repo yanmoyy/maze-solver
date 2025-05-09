@@ -12,6 +12,7 @@ class Cell:
         self.has_right_wall = True
         self.has_top_wall = True
         self.has_bottom_wall = True
+        self.visited = False
 
     def draw(self, x1: float, y1: float, x2: float, y2: float):
         if self._win is None:
@@ -20,18 +21,26 @@ class Cell:
         self._x2 = x2
         self._y1 = y1
         self._y2 = y2
+        left = Line(Point(x1, y1), Point(x1, y2))
+        right = Line(Point(x2, y1), Point(x2, y2))
+        top = Line(Point(x1, y1), Point(x2, y1))
+        bottom = Line(Point(x1, y2), Point(x2, y2))
         if self.has_left_wall:
-            line = Line(Point(x1, y1), Point(x1, y2))
-            self._win.draw_line(line)
+            self._win.draw_line(right)
+        else:
+            self._win.draw_line(right, "white")
         if self.has_right_wall:
-            line = Line(Point(x2, y1), Point(x2, y2))
-            self._win.draw_line(line)
+            self._win.draw_line(left)
+        else:
+            self._win.draw_line(left, "white")
         if self.has_top_wall:
-            line = Line(Point(x1, y1), Point(x2, y1))
-            self._win.draw_line(line)
+            self._win.draw_line(top)
+        else:
+            self._win.draw_line(top, "white")
         if self.has_bottom_wall:
-            line = Line(Point(x1, y2), Point(x2, y2))
-            self._win.draw_line(line)
+            self._win.draw_line(bottom)
+        else:
+            self._win.draw_line(bottom, "white")
 
     def get_center(self) -> Point:
         if self._x1 is None or self._x2 is None or self._y1 is None or self._y2 is None:
